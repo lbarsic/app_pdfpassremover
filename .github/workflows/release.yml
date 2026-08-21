@@ -1,0 +1,29 @@
+name: Release portable app
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: PDF Password Remover ${{ github.ref_name }}
+          files: PDF_Unlocker.exe
+          fail_on_unmatched_files: true
+          generate_release_notes: false
+          body: |
+            Portable Windows x64 app. No install, no Python, no build.
+
+            1. Download `PDF_Unlocker.exe`
+            2. Copy it anywhere
+            3. Double-click to run
