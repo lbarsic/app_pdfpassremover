@@ -3,6 +3,7 @@ build/
 build_env/
 dist/
 PDF_Unlocker.exe
+PDF_Password_Remover.exe
 assets/preview_*.png
 
 # Python

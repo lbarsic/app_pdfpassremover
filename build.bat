@@ -1,6 +1,6 @@
 @echo off
 setlocal enabledelayedexpansion
-title PDF Unlocker - Build Script
+title PDF Password Remover - Build Script
 
 echo.
 echo  ==========================================
@@ -48,7 +48,7 @@ if errorlevel 1 (
 echo  [3/4]  Building executable...
 echo.
 
-pyinstaller PDF_Unlocker.spec --noconfirm --clean
+pyinstaller PDF_Password_Remover.spec --noconfirm --clean
 
 if errorlevel 1 (
     echo.
@@ -61,7 +61,7 @@ echo.
 echo  [4/4]  Build complete!
 echo.
 echo  ==========================================
-echo    Output file:  dist\PDF_Unlocker.exe
+echo    Output file:  dist\PDF_Password_Remover.exe
 echo  ==========================================
 echo.
 echo  This single .exe file is fully portable.

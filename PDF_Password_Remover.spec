@@ -29,7 +29,7 @@ exe = EXE(
     a.binaries,
     a.datas,
     [],
-    name='PDF_Unlocker',
+    name='PDF_Password_Remover',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,

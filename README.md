@@ -2,19 +2,17 @@
 
 A portable Windows app that strips passwords from PDF files in bulk.
 
-**No install. No Python. No build.** Download the `.exe`, copy it anywhere, double-click.
+Portable Windows x64 app, no install.
 
 ---
 
 ## Download
 
-**[PDF_Unlocker.exe](https://github.com/lbarsic/app_pdfpassremover/releases/latest/download/PDF_Unlocker.exe)** — latest portable build (Windows x64)
+**[PDF_Password_Remover.exe](https://github.com/lbarsic/app_pdfpassremover/releases/latest/download/PDF_Password_Remover.exe)**
+
+Double-click to run.
 
 Or grab it from the [Releases](https://github.com/lbarsic/app_pdfpassremover/releases) page.
-
-Copy the file to a USB stick, a folder on your desktop, anywhere. It does not write to the registry or require admin rights.
-
-If Windows still shows the old Python icon after replacing a previous download, delete the old `.exe` (empty Recycle Bin) and download again — Explorer caches icons by file path.
 
 ---
 
@@ -52,4 +50,4 @@ pip install -r requirements.txt
 python unlock_pdf.py
 ```
 
-To rebuild the portable `.exe` on Windows: double-click `build.bat` (Python 3.9+ on PATH). Output is `dist\PDF_Unlocker.exe`.
+To rebuild the portable `.exe` on Windows: double-click `build.bat` (Python 3.9+ on PATH). Output is `dist\PDF_Password_Remover.exe`.

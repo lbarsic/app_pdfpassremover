@@ -2,7 +2,7 @@
 PDF Password Remover
 A portable Windows app to strip passwords from PDF files in bulk.
 Requires: customtkinter, pikepdf
-Build with: pyinstaller PDF_Unlocker.spec
+Build with: pyinstaller PDF_Password_Remover.spec
 """
 
 import os

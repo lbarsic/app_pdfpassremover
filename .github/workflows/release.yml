@@ -25,25 +25,25 @@ jobs:
           pip install -r requirements.txt
 
       - name: Build portable exe
-        run: pyinstaller PDF_Unlocker.spec --noconfirm --clean
+        run: pyinstaller PDF_Password_Remover.spec --noconfirm --clean
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: PDF_Unlocker
-          path: dist/PDF_Unlocker.exe
+          name: PDF_Password_Remover
+          path: dist/PDF_Password_Remover.exe
 
       - name: Publish GitHub Release
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
           name: PDF Password Remover ${{ github.ref_name }}
-          files: dist/PDF_Unlocker.exe
+          files: dist/PDF_Password_Remover.exe
           fail_on_unmatched_files: true
           generate_release_notes: false
           body: |
-            Portable Windows x64 app. No install, no Python, no build.
+            Portable Windows x64 app, no install.
 
-            1. Download `PDF_Unlocker.exe`
-            2. Copy it anywhere
-            3. Double-click to run
+            Download `PDF_Password_Remover.exe`
+
+            Double-click to run
