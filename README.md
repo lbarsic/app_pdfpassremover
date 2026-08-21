@@ -14,6 +14,8 @@ Or grab it from the [Releases](https://github.com/lbarsic/app_pdfpassremover/rel
 
 Copy the file to a USB stick, a folder on your desktop, anywhere. It does not write to the registry or require admin rights.
 
+If Windows still shows the old Python icon after replacing a previous download, delete the old `.exe` (empty Recycle Bin) and download again — Explorer caches icons by file path.
+
 ---
 
 ## How to Use the App
