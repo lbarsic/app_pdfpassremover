@@ -1,7 +1,18 @@
 # -*- mode: python ; coding: utf-8 -*-
+import os
+import customtkinter
 from PyInstaller.utils.hooks import collect_all
 
-datas = [('assets/app.ico', 'assets'), ('assets/app.png', 'assets')]
+# Same .ico CustomTkinter applies to the window title bar, so the
+# downloaded .exe file matches the running app's header icon.
+CTK_ICON = os.path.join(
+    os.path.dirname(customtkinter.__file__),
+    "assets", "icons", "CustomTkinter_icon_Windows.ico",
+)
+if not os.path.isfile(CTK_ICON):
+    raise SystemExit(f"CustomTkinter window icon not found: {CTK_ICON}")
+
+datas = []
 binaries = []
 hiddenimports = ['pikepdf._qpdf']
 tmp_ret = collect_all('customtkinter')
@@ -42,5 +53,5 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon='assets/app.ico',
+    icon=CTK_ICON,
 )

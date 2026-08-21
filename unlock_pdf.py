@@ -8,7 +8,6 @@ Build with: pyinstaller PDF_Unlocker.spec
 import os
 import sys
 import threading
-import tkinter as tk
 import customtkinter as ctk
 from tkinter import filedialog, messagebox
 
@@ -32,11 +31,6 @@ RED_DARK    = "#DC2626"
 GRAY_BTN    = ("gray80", "gray30")
 GRAY_HOVER  = ("gray70", "gray40")
 GRAY_TEXT   = ("black", "white")
-
-
-def _resource_path(*parts: str) -> str:
-    base = getattr(sys, "_MEIPASS", os.path.dirname(os.path.abspath(__file__)))
-    return os.path.join(base, *parts)
 
 
 def _windows_app_id() -> None:
@@ -106,7 +100,6 @@ class App(ctk.CTk):
         self.title("PDF Password Remover")
         self.geometry("700x640")
         self.minsize(560, 520)
-        self._apply_icon()
 
         # State
         self.selected_files: list[str] = []
@@ -119,36 +112,6 @@ class App(ctk.CTk):
         self._build_ui()
         self.bind("<Configure>", self._sync_body_scroll, add="+")
         self.after_idle(self._sync_body_scroll)
-
-    def _apply_icon(self):
-        ico = _resource_path("assets", "app.ico")
-        png = _resource_path("assets", "app.png")
-        if os.path.isfile(ico):
-            try:
-                self.iconbitmap(ico)
-            except Exception:
-                pass
-        if os.path.isfile(png):
-            try:
-                self._icon_photo = tk.PhotoImage(file=png)
-                self.iconphoto(True, self._icon_photo)
-            except Exception:
-                pass
-        # CustomTkinter can reset the window icon after init.
-        self.after(200, self._reapply_iconbitmap)
-
-    def _reapply_iconbitmap(self):
-        ico = _resource_path("assets", "app.ico")
-        if os.path.isfile(ico):
-            try:
-                self.iconbitmap(ico)
-            except Exception:
-                pass
-        if getattr(self, "_icon_photo", None) is not None:
-            try:
-                self.iconphoto(True, self._icon_photo)
-            except Exception:
-                pass
 
     def _sync_body_scroll(self, event=None):
         try:
