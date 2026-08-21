@@ -10,7 +10,7 @@ A portable Windows app that strips passwords from PDF files in bulk.
 
 **[PDF_Unlocker.exe](https://github.com/lbarsic/app_pdfpassremover/releases/latest/download/PDF_Unlocker.exe)** — latest portable build (Windows x64)
 
-Or grab it from the [Releases](https://github.com/lbarsic/app_pdfpassremover/releases) page, or the `PDF_Unlocker.exe` file in this repo.
+Or grab it from the [Releases](https://github.com/lbarsic/app_pdfpassremover/releases) page.
 
 Copy the file to a USB stick, a folder on your desktop, anywhere. It does not write to the registry or require admin rights.
 

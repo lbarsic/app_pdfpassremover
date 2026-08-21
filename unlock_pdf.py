@@ -2,12 +2,13 @@
 PDF Password Remover
 A portable Windows app to strip passwords from PDF files in bulk.
 Requires: customtkinter, pikepdf
-Build with: pyinstaller --onefile --windowed --collect-all customtkinter --name PDF_Unlocker unlock_pdf.py
+Build with: pyinstaller PDF_Unlocker.spec
 """
 
 import os
 import sys
 import threading
+import tkinter as tk
 import customtkinter as ctk
 from tkinter import filedialog, messagebox
 
@@ -33,14 +34,79 @@ GRAY_HOVER  = ("gray70", "gray40")
 GRAY_TEXT   = ("black", "white")
 
 
+def _resource_path(*parts: str) -> str:
+    base = getattr(sys, "_MEIPASS", os.path.dirname(os.path.abspath(__file__)))
+    return os.path.join(base, *parts)
+
+
+def _windows_app_id() -> None:
+    if sys.platform != "win32":
+        return
+    try:
+        import ctypes
+        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(
+            "lbarsic.PDFPasswordRemover"
+        )
+    except Exception:
+        pass
+
+
+class AutoHideScrollableFrame(ctk.CTkScrollableFrame):
+    """Scrollable frame whose scrollbar is shown only when content overflows."""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._bar_visible = True
+        self._syncing = False
+        self.bind("<Configure>", self._sync_scrollbar, add="+")
+        self._parent_canvas.bind("<Configure>", self._sync_scrollbar, add="+")
+        self.after_idle(self._sync_scrollbar)
+
+    def _create_grid(self):
+        super()._create_grid()
+        if not getattr(self, "_bar_visible", True):
+            try:
+                self._scrollbar.grid_remove()
+            except Exception:
+                pass
+
+    def _sync_scrollbar(self, event=None):
+        if self._syncing:
+            return
+        self._syncing = True
+        try:
+            canvas = self._parent_canvas
+            canvas.update_idletasks()
+            bbox = canvas.bbox("all")
+            if bbox is not None:
+                canvas.configure(scrollregion=bbox)
+            y0, y1 = canvas.yview()
+            if canvas.winfo_height() <= 1 or y1 <= y0:
+                need = False
+            else:
+                need = (y1 - y0) < 0.999
+            if need and not self._bar_visible:
+                self._scrollbar.grid()
+                self._bar_visible = True
+            elif not need and self._bar_visible:
+                self._scrollbar.grid_remove()
+                canvas.yview_moveto(0)
+                self._bar_visible = False
+        except Exception:
+            pass
+        finally:
+            self._syncing = False
+
+
 # ── App ────────────────────────────────────────────────────────────────────────
 class App(ctk.CTk):
     def __init__(self):
         super().__init__()
 
         self.title("PDF Password Remover")
-        self.geometry("700x620")
+        self.geometry("700x640")
         self.minsize(560, 520)
+        self._apply_icon()
 
         # State
         self.selected_files: list[str] = []
@@ -51,6 +117,44 @@ class App(ctk.CTk):
         self._running      = False
 
         self._build_ui()
+        self.bind("<Configure>", self._sync_body_scroll, add="+")
+        self.after_idle(self._sync_body_scroll)
+
+    def _apply_icon(self):
+        ico = _resource_path("assets", "app.ico")
+        png = _resource_path("assets", "app.png")
+        if os.path.isfile(ico):
+            try:
+                self.iconbitmap(ico)
+            except Exception:
+                pass
+        if os.path.isfile(png):
+            try:
+                self._icon_photo = tk.PhotoImage(file=png)
+                self.iconphoto(True, self._icon_photo)
+            except Exception:
+                pass
+        # CustomTkinter can reset the window icon after init.
+        self.after(200, self._reapply_iconbitmap)
+
+    def _reapply_iconbitmap(self):
+        ico = _resource_path("assets", "app.ico")
+        if os.path.isfile(ico):
+            try:
+                self.iconbitmap(ico)
+            except Exception:
+                pass
+        if getattr(self, "_icon_photo", None) is not None:
+            try:
+                self.iconphoto(True, self._icon_photo)
+            except Exception:
+                pass
+
+    def _sync_body_scroll(self, event=None):
+        try:
+            self.body._sync_scrollbar()
+        except Exception:
+            pass
 
     # ── UI construction ────────────────────────────────────────────────────────
 
@@ -79,9 +183,10 @@ class App(ctk.CTk):
         ).grid(row=1, column=0, sticky="w", padx=24, pady=(0, 14))
 
     def _build_body(self):
-        body = ctk.CTkScrollableFrame(self, corner_radius=0, fg_color="transparent")
+        body = AutoHideScrollableFrame(self, corner_radius=0, fg_color="transparent")
         body.grid(row=1, column=0, sticky="nsew")
         body.grid_columnconfigure(0, weight=1)
+        self.body = body
 
         # ── Section 1 : Files ──────────────────────────────────────────────────
         self._section_label(body, "PDF FILES", row=0)
@@ -213,6 +318,7 @@ class App(ctk.CTk):
                 added += 1
         if added:
             self.empty_label.grid_remove()
+        self.after_idle(self._sync_body_scroll)
 
     def _add_file_row(self, path: str):
         idx = len(self.file_widgets)
@@ -261,6 +367,7 @@ class App(ctk.CTk):
                 w.grid(row=i, column=0, sticky="ew", padx=8, pady=4)
         if not self.selected_files:
             self.empty_label.grid()
+        self.after_idle(self._sync_body_scroll)
 
     def clear_all(self):
         for w in self.file_widgets.values():
@@ -268,6 +375,7 @@ class App(ctk.CTk):
         self.file_widgets.clear()
         self.selected_files.clear()
         self.empty_label.grid()
+        self.after_idle(self._sync_body_scroll)
 
     # ── UI interactions ────────────────────────────────────────────────────────
 
@@ -383,5 +491,6 @@ class App(ctk.CTk):
 
 # ── Entry point ────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
+    _windows_app_id()
     app = App()
     app.mainloop()
