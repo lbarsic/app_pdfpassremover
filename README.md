@@ -1,3 +1,1 @@
-# PDF Password Remover
-
-Portable Windows app that strips passwords from PDFs in bulk. No install — download `PDF_Password_Remover.exe` and double-click.
+Portable Windows app that strips passwords from PDFs in bulk. Download PDF Password Remover. Double-click to run. No install.
