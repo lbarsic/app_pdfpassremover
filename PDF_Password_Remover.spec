@@ -1,7 +1,7 @@
 # -*- mode: python ; coding: utf-8 -*-
 from PyInstaller.utils.hooks import collect_all
 
-datas = []
+datas = [('assets/app.ico', 'assets')]
 binaries = []
 hiddenimports = ['pikepdf._qpdf']
 tmp_ret = collect_all('customtkinter')

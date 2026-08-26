@@ -33,6 +33,11 @@ GRAY_HOVER  = ("gray70", "gray40")
 GRAY_TEXT   = ("black", "white")
 
 
+def _resource_path(*parts: str) -> str:
+    base = getattr(sys, "_MEIPASS", os.path.dirname(os.path.abspath(__file__)))
+    return os.path.join(base, *parts)
+
+
 def _windows_app_id() -> None:
     if sys.platform != "win32":
         return
@@ -100,6 +105,7 @@ class App(ctk.CTk):
         self.title("PDF Password Remover")
         self.geometry("700x640")
         self.minsize(560, 520)
+        self._apply_icon()
 
         # State
         self.selected_files: list[str] = []
@@ -112,6 +118,23 @@ class App(ctk.CTk):
         self._build_ui()
         self.bind("<Configure>", self._sync_body_scroll, add="+")
         self.after_idle(self._sync_body_scroll)
+
+    def _apply_icon(self):
+        ico = _resource_path("assets", "app.ico")
+        if not os.path.isfile(ico):
+            return
+        try:
+            self.iconbitmap(ico)
+        except Exception:
+            pass
+        # CustomTkinter may apply its default icon shortly after init.
+        self.after(200, lambda: self._reapply_icon(ico))
+
+    def _reapply_icon(self, ico: str):
+        try:
+            self.iconbitmap(ico)
+        except Exception:
+            pass
 
     def _sync_body_scroll(self, event=None):
         try:
